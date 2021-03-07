@@ -1,0 +1,9 @@
+[package]
+name = "toy-language-interpreter"
+version = "0.1.0"
+authors = ["BramVerb <33070319+BramVerb@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
