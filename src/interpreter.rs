@@ -6,12 +6,32 @@ pub enum ValExpr {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum InterpError {
-    Unimplemented,
-}
+pub enum InterpError {}
 
 pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
-        _ => Err(InterpError::Unimplemented),
+        CompExpr::Num(number) => Ok(ValExpr::Num(number)),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use crate::interp;
+    use crate::interpreter::CompExpr;
+    use crate::interpreter::ValExpr;
+
+    #[test]
+    fn number() {
+        let expr = CompExpr::Num(1);
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(1)));
+    }
+
+    #[test]
+    fn negative_number() {
+        let expr = CompExpr::Num(-10);
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(-10)));
     }
 }
