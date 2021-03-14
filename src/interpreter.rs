@@ -15,3 +15,18 @@ pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
         _ => Err(InterpError::Unimplemented),
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::interp;
+    use crate::interpreter::CompExpr;
+    use crate::interpreter::ValExpr;
+
+    #[test]
+    fn number() {
+        let expr = CompExpr::Num(1);
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(1)));
+    }
+}
