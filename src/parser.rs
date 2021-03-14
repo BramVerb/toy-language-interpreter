@@ -48,8 +48,8 @@ mod tests {
             res,
             Ok(ArithExpr::BinOp(
                 "+".to_string(),
-                Box::new(ArithExpr::Num(1)),
-                Box::new(ArithExpr::Num(1))
+                Box::new(ArithExpr::Num(2)),
+                Box::new(ArithExpr::Num(2))
             ))
         );
     }
