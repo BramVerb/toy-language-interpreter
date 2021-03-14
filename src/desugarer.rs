@@ -8,7 +8,6 @@ pub enum CompExpr {
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum DesugarError {
-    Unimplemented,
     UnrecognizedBinaryOperation,
 }
 

@@ -6,9 +6,7 @@ pub enum ValExpr {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum InterpError {
-    Unimplemented,
-}
+pub enum InterpError {}
 
 pub fn interp_plus(left: CompExpr, right: CompExpr) -> Result<ValExpr, InterpError> {
     let left_val = interp(left)?;
@@ -26,7 +24,6 @@ pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
         CompExpr::Num(number) => Ok(ValExpr::Num(number)),
         CompExpr::Plus(left, right) => interp_plus(*left, *right),
-        _ => Err(InterpError::Unimplemented),
     }
 }
 
