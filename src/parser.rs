@@ -23,6 +23,7 @@ pub enum ParseError {
 
 pub fn parse(exp: SExpr) -> Result<ArithExpr, ParseError> {
     match exp {
+        SExpr::Num(number) => Ok(ArithExpr::Num(number)),
         _ => Err(ParseError::Unimplemented),
     }
 }
