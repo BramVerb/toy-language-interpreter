@@ -50,4 +50,11 @@ mod tests {
         let res = interp(expr);
         assert_eq!(res, Ok(ValExpr::Num(-10)));
     }
+
+    #[test]
+    fn plus() {
+        let expr = CompExpr::Plus(Box::new(CompExpr::Num(1)), Box::new(CompExpr::Num(2)));
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(3)));
+    }
 }
