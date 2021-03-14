@@ -61,7 +61,7 @@ mod tests {
     fn plus() {
         let expr = SExpr::List(vec![
             SExpr::Symbol("+".to_string()),
-            SExpr::Num(2),
+            SExpr::Num(1),
             SExpr::Num(2),
         ]);
         let res = parse(expr);
@@ -69,7 +69,7 @@ mod tests {
             res,
             Ok(ArithExpr::BinOp(
                 "+".to_string(),
-                Box::new(ArithExpr::Num(2)),
+                Box::new(ArithExpr::Num(1)),
                 Box::new(ArithExpr::Num(2))
             ))
         );

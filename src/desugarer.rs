@@ -58,14 +58,14 @@ mod tests {
     fn plus() {
         let expr = ArithExpr::BinOp(
             "+".to_string(),
-            Box::new(ArithExpr::Num(2)),
+            Box::new(ArithExpr::Num(1)),
             Box::new(ArithExpr::Num(2)),
         );
         let res = desugar(expr);
         assert_eq!(
             res,
             Ok(CompExpr::Plus(
-                Box::new(CompExpr::Num(2)),
+                Box::new(CompExpr::Num(1)),
                 Box::new(CompExpr::Num(2)),
             ))
         );
