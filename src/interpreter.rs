@@ -12,6 +12,7 @@ pub enum InterpError {
 
 pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
+        CompExpr::Num(number) => Ok(ValExpr::Num(number)),
         _ => Err(InterpError::Unimplemented),
     }
 }
