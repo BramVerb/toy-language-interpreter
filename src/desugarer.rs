@@ -13,6 +13,7 @@ pub enum DesugarError {
 
 pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
     match exp {
+        ArithExpr::Num(number) => Ok(CompExpr::Num(number)),
         _ => Err(DesugarError::Unimplemented),
     }
 }
