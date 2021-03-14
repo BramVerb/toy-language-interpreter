@@ -29,4 +29,11 @@ mod tests {
         let res = parse(expr);
         assert_eq!(res, Ok(ArithExpr::Num(1)));
     }
+
+    #[test]
+    fn negative_number() {
+        let expr = SExpr::Num(-4);
+        let res = parse(expr);
+        assert_eq!(res, Ok(ArithExpr::Num(-4)));
+    }
 }

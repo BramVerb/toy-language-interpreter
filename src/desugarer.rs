@@ -27,4 +27,11 @@ mod tests {
         let res = desugar(expr);
         assert_eq!(res, Ok(CompExpr::Num(1)));
     }
+
+    #[test]
+    fn negative_number() {
+        let expr = ArithExpr::Num(-3);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Num(-3)));
+    }
 }

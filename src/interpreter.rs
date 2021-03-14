@@ -27,4 +27,11 @@ mod tests {
         let res = interp(expr);
         assert_eq!(res, Ok(ValExpr::Num(1)));
     }
+
+    #[test]
+    fn negative_number() {
+        let expr = CompExpr::Num(-10);
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(-10)));
+    }
 }
