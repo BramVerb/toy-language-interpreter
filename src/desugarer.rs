@@ -16,3 +16,18 @@ pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
         _ => Err(DesugarError::Unimplemented),
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::desugar;
+    use crate::desugarer::CompExpr;
+    use crate::parser::ArithExpr;
+
+    #[test]
+    fn number() {
+        let expr = ArithExpr::Num(1);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Num(1)));
+    }
+}
