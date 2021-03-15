@@ -32,6 +32,7 @@ fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
 fn parse_symbol(symbol: String) -> Result<ArithExpr, ParseError> {
     match symbol.as_str() {
         "false" => Ok(ArithExpr::Bool(false)),
+        "true" => Ok(ArithExpr::Bool(true)),
         _ => Err(ParseError::UnexpectedSymbol(symbol)),
     }
 }
