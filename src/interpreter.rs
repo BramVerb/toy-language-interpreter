@@ -46,6 +46,7 @@ mod tests {
 
     use crate::interp;
     use crate::interpreter::CompExpr;
+    use crate::interpreter::InterpError;
     use crate::interpreter::ValExpr;
 
     #[test]
@@ -88,5 +89,19 @@ mod tests {
         let expr = CompExpr::Mult(Box::new(CompExpr::Num(-5)), Box::new(CompExpr::Num(-4)));
         let res = interp(expr);
         assert_eq!(res, Ok(ValExpr::Num(20)));
+    }
+
+    #[test]
+    fn plus_bool_should_err() {
+        let expr = CompExpr::Plus(Box::new(CompExpr::Num(-5)), Box::new(CompExpr::Bool(false)));
+        let res = interp(expr);
+        assert_eq!(res, Err(InterpError::InvalidType));
+    }
+
+    #[test]
+    fn mult_bool_should_err() {
+        let expr = CompExpr::Mult(Box::new(CompExpr::Num(-5)), Box::new(CompExpr::Bool(false)));
+        let res = interp(expr);
+        assert_eq!(res, Err(InterpError::InvalidType));
     }
 }
