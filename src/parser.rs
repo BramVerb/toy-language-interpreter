@@ -134,4 +134,20 @@ mod tests {
         let res = parse(expr);
         assert_eq!(res, Err(ParseError::UnexpectedSymbol("True".to_string())));
     }
+
+    #[test]
+    fn unop_not() {
+        let expr = SExpr::List(vec![
+            SExpr::Symbol("not".to_string()),
+            SExpr::Symbol("false".to_string()),
+        ]);
+        let res = parse(expr);
+        assert_eq!(
+            res,
+            Ok(ArithExpr::UnOp(
+                "not".to_string(),
+                Box::new(ArithExpr::Bool(true))
+            ))
+        );
+    }
 }
