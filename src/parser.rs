@@ -151,7 +151,7 @@ mod tests {
             res,
             Ok(ArithExpr::UnOp(
                 "not".to_string(),
-                Box::new(ArithExpr::Bool(true))
+                Box::new(ArithExpr::Bool(false))
             ))
         );
     }
