@@ -65,4 +65,21 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn mult() {
+        let expr = ArithExpr::BinOp(
+            "*".to_string(),
+            Box::new(ArithExpr::Num(1)),
+            Box::new(ArithExpr::Num(2)),
+        );
+        let res = desugar(expr);
+        assert_eq!(
+            res,
+            Ok(CompExpr::Mult(
+                Box::new(CompExpr::Num(1)),
+                Box::new(CompExpr::Num(2)),
+            ))
+        );
+    }
 }
