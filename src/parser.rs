@@ -9,6 +9,7 @@ pub enum SExpr {
 pub enum ArithExpr {
     Num(i32),
     Bool(bool),
+    UnOp(String, Box<ArithExpr>),
     BinOp(String, Box<ArithExpr>, Box<ArithExpr>),
 }
 
@@ -24,6 +25,10 @@ fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
             op.to_string(),
             Box::new(parse((*left).clone())?),
             Box::new(parse((*right).clone())?),
+        )),
+        [SExpr::Symbol(op), expr] => Ok(ArithExpr::UnOp(
+            op.to_string(),
+            Box::new(parse((*expr).clone())?),
         )),
         _ => Err(ParseError::UnknownExpression(SExpr::List(list))),
     }
