@@ -116,4 +116,18 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn bool_true() {
+        let expr = ArithExpr::Bool(true);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Bool(true)));
+    }
+
+    #[test]
+    fn bool_false() {
+        let expr = ArithExpr::Bool(false);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Bool(false)));
+    }
 }
