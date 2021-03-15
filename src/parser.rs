@@ -8,6 +8,7 @@ pub enum SExpr {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum ArithExpr {
     Num(i32),
+    Bool(bool),
     BinOp(String, Box<ArithExpr>, Box<ArithExpr>),
 }
 
@@ -28,11 +29,19 @@ fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
     }
 }
 
+fn parse_symbol(symbol: String) -> Result<ArithExpr, ParseError> {
+    match symbol.as_str() {
+        "false" => Ok(ArithExpr::Bool(false)),
+        "true" => Ok(ArithExpr::Bool(true)),
+        _ => Err(ParseError::UnexpectedSymbol(symbol)),
+    }
+}
+
 pub fn parse(exp: SExpr) -> Result<ArithExpr, ParseError> {
     match exp {
         SExpr::Num(number) => Ok(ArithExpr::Num(number)),
         SExpr::List(list) => parse_list(list),
-        SExpr::Symbol(symbol) => Err(ParseError::UnexpectedSymbol(symbol)),
+        SExpr::Symbol(symbol) => parse_symbol(symbol),
     }
 }
 
@@ -103,5 +112,26 @@ mod tests {
                 Box::new(ArithExpr::Num(2))
             ))
         );
+    }
+
+    #[test]
+    fn bool_false() {
+        let expr = SExpr::Symbol("false".to_string());
+        let res = parse(expr);
+        assert_eq!(res, Ok(ArithExpr::Bool(false)));
+    }
+
+    #[test]
+    fn bool_true() {
+        let expr = SExpr::Symbol("true".to_string());
+        let res = parse(expr);
+        assert_eq!(res, Ok(ArithExpr::Bool(true)));
+    }
+
+    #[test]
+    fn not_a_bool() {
+        let expr = SExpr::Symbol("True".to_string());
+        let res = parse(expr);
+        assert_eq!(res, Err(ParseError::UnexpectedSymbol("True".to_string())));
     }
 }

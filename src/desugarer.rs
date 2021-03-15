@@ -3,6 +3,7 @@ use crate::parser::ArithExpr;
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum CompExpr {
     Num(i32),
+    Bool(bool),
     Plus(Box<CompExpr>, Box<CompExpr>),
     Mult(Box<CompExpr>, Box<CompExpr>),
 }
@@ -37,6 +38,7 @@ pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
     match exp {
         ArithExpr::Num(number) => Ok(CompExpr::Num(number)),
         ArithExpr::BinOp(op, left, right) => desugar_bin_op(op, *left, *right),
+        ArithExpr::Bool(b) => Ok(CompExpr::Bool(b)),
     }
 }
 
@@ -113,5 +115,19 @@ mod tests {
                 ))
             ))
         );
+    }
+
+    #[test]
+    fn bool_true() {
+        let expr = ArithExpr::Bool(true);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Bool(true)));
+    }
+
+    #[test]
+    fn bool_false() {
+        let expr = ArithExpr::Bool(false);
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Bool(false)));
     }
 }
