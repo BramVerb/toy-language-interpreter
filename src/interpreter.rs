@@ -8,9 +8,18 @@ pub enum ValExpr {
 #[derive(Debug, PartialEq, Eq)]
 pub enum InterpError {}
 
+pub fn interp_plus(left: CompExpr, right: CompExpr) -> Result<ValExpr, InterpError> {
+    let left_val = interp(left)?;
+    let right_val = interp(right)?;
+    let ValExpr::Num(l) = left_val;
+    let ValExpr::Num(r) = right_val;
+    Ok(ValExpr::Num(l + r))
+}
+
 pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
         CompExpr::Num(number) => Ok(ValExpr::Num(number)),
+        CompExpr::Plus(left, right) => interp_plus(*left, *right),
     }
 }
 
@@ -33,5 +42,12 @@ mod tests {
         let expr = CompExpr::Num(-10);
         let res = interp(expr);
         assert_eq!(res, Ok(ValExpr::Num(-10)));
+    }
+
+    #[test]
+    fn plus() {
+        let expr = CompExpr::Plus(Box::new(CompExpr::Num(1)), Box::new(CompExpr::Num(2)));
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(3)));
     }
 }
