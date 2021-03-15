@@ -8,6 +8,7 @@ pub enum SExpr {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum ArithExpr {
     Num(i32),
+    Bool(bool),
     BinOp(String, Box<ArithExpr>, Box<ArithExpr>),
 }
 
@@ -103,5 +104,12 @@ mod tests {
                 Box::new(ArithExpr::Num(2))
             ))
         );
+    }
+
+    #[test]
+    fn bool_false() {
+        let expr = SExpr::Symbol("false".to_string());
+        let res = parse(expr);
+        assert_eq!(res, Ok(ArithExpr::Bool(false)));
     }
 }
