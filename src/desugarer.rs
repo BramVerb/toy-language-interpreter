@@ -11,15 +11,11 @@ pub enum DesugarError {
     UnrecognizedBinaryOperation,
 }
 
-fn desugar_bin_op(
-    op: String,
-    left: Box<ArithExpr>,
-    right: Box<ArithExpr>,
-) -> Result<CompExpr, DesugarError> {
+fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompExpr, DesugarError> {
     match op.as_str() {
         "+" => Ok(CompExpr::Plus(
-            Box::new(desugar(*left)?),
-            Box::new(desugar(*right)?),
+            Box::new(desugar(left)?),
+            Box::new(desugar(right)?),
         )),
         _ => Err(DesugarError::UnrecognizedBinaryOperation),
     }
@@ -28,7 +24,7 @@ fn desugar_bin_op(
 pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
     match exp {
         ArithExpr::Num(number) => Ok(CompExpr::Num(number)),
-        ArithExpr::BinOp(op, left, right) => desugar_bin_op(op, left, right),
+        ArithExpr::BinOp(op, left, right) => desugar_bin_op(op, *left, *right),
     }
 }
 
