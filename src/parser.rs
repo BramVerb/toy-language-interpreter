@@ -86,4 +86,22 @@ mod tests {
         let res = parse(expr.clone());
         assert_eq!(res, Err(ParseError::UnknownExpression(expr)));
     }
+
+    #[test]
+    fn mult() {
+        let expr = SExpr::List(vec![
+            SExpr::Symbol("*".to_string()),
+            SExpr::Num(1),
+            SExpr::Num(2),
+        ]);
+        let res = parse(expr);
+        assert_eq!(
+            res,
+            Ok(ArithExpr::BinOp(
+                "*".to_string(),
+                Box::new(ArithExpr::Num(1)),
+                Box::new(ArithExpr::Num(2))
+            ))
+        );
+    }
 }

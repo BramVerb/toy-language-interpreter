@@ -4,6 +4,7 @@ use crate::parser::ArithExpr;
 pub enum CompExpr {
     Num(i32),
     Plus(Box<CompExpr>, Box<CompExpr>),
+    Mult(Box<CompExpr>, Box<CompExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -14,6 +15,10 @@ pub enum DesugarError {
 fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompExpr, DesugarError> {
     match op.as_str() {
         "+" => Ok(CompExpr::Plus(
+            Box::new(desugar(left)?),
+            Box::new(desugar(right)?),
+        )),
+        "*" => Ok(CompExpr::Mult(
             Box::new(desugar(left)?),
             Box::new(desugar(right)?),
         )),
@@ -60,6 +65,23 @@ mod tests {
         assert_eq!(
             res,
             Ok(CompExpr::Plus(
+                Box::new(CompExpr::Num(1)),
+                Box::new(CompExpr::Num(2)),
+            ))
+        );
+    }
+
+    #[test]
+    fn mult() {
+        let expr = ArithExpr::BinOp(
+            "*".to_string(),
+            Box::new(ArithExpr::Num(1)),
+            Box::new(ArithExpr::Num(2)),
+        );
+        let res = desugar(expr);
+        assert_eq!(
+            res,
+            Ok(CompExpr::Mult(
                 Box::new(CompExpr::Num(1)),
                 Box::new(CompExpr::Num(2)),
             ))
