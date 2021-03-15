@@ -6,6 +6,7 @@ pub enum CompExpr {
     Bool(bool),
     Plus(Box<CompExpr>, Box<CompExpr>),
     Mult(Box<CompExpr>, Box<CompExpr>),
+    Not(Box<CompExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
