@@ -127,4 +127,11 @@ mod tests {
         let res = parse(expr);
         assert_eq!(res, Ok(ArithExpr::Bool(true)));
     }
+
+    #[test]
+    fn not_a_bool() {
+        let expr = SExpr::Symbol("True".to_string());
+        let res = parse(expr);
+        assert_eq!(res, Err(ParseError::UnexpectedSymbol("True".to_string())));
+    }
 }
