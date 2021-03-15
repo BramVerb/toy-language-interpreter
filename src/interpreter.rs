@@ -11,12 +11,8 @@ pub enum InterpError {}
 pub fn interp_plus(left: CompExpr, right: CompExpr) -> Result<ValExpr, InterpError> {
     let left_val = interp(left)?;
     let right_val = interp(right)?;
-    let l = match left_val {
-        ValExpr::Num(number) => number,
-    };
-    let r = match right_val {
-        ValExpr::Num(number) => number,
-    };
+    let ValExpr::Num(l) = left_val;
+    let ValExpr::Num(r) = right_val;
     Ok(ValExpr::Num(l + r))
 }
 
