@@ -29,11 +29,18 @@ fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
     }
 }
 
+fn parse_symbol(symbol: String) -> Result<ArithExpr, ParseError> {
+    match symbol.as_str() {
+        "false" => Ok(ArithExpr::Bool(false)),
+        _ => Err(ParseError::UnexpectedSymbol(symbol)),
+    }
+}
+
 pub fn parse(exp: SExpr) -> Result<ArithExpr, ParseError> {
     match exp {
         SExpr::Num(number) => Ok(ArithExpr::Num(number)),
         SExpr::List(list) => parse_list(list),
-        SExpr::Symbol(symbol) => Err(ParseError::UnexpectedSymbol(symbol)),
+        SExpr::Symbol(symbol) => parse_symbol(symbol),
     }
 }
 
