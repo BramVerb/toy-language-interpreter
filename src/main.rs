@@ -18,3 +18,26 @@ fn main() {
     let interpreted = interp(desugared.unwrap());
     println!("output: {:?}", interpreted.unwrap());
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::desugarer::desugar;
+    use crate::interpreter::interp;
+    use crate::interpreter::ValExpr;
+    use crate::parser::parse;
+    use crate::parser::SExpr;
+
+    #[test]
+    fn minus() {
+        let program = SExpr::List(vec![
+            SExpr::Symbol("-".to_string()),
+            SExpr::Num(10),
+            SExpr::Num(3),
+        ]);
+        let parsed = parse(program);
+        let desugared = desugar(parsed.unwrap());
+        let interpreted = interp(desugared.unwrap());
+        assert_eq!(interpreted, Ok(ValExpr::Num(7)));
+    }
+}
