@@ -22,6 +22,13 @@ fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompE
             Box::new(desugar(left)?),
             Box::new(desugar(right)?),
         )),
+        "-" => Ok(CompExpr::Plus(
+            Box::new(desugar(left)?),
+            Box::new(CompExpr::Mult(
+                Box::new(CompExpr::Num(-1)),
+                Box::new(desugar(right)?),
+            )),
+        )),
         _ => Err(DesugarError::UnrecognizedBinaryOperation),
     }
 }
@@ -84,6 +91,26 @@ mod tests {
             Ok(CompExpr::Mult(
                 Box::new(CompExpr::Num(1)),
                 Box::new(CompExpr::Num(2)),
+            ))
+        );
+    }
+
+    #[test]
+    fn minus() {
+        let expr = ArithExpr::BinOp(
+            "-".to_string(),
+            Box::new(ArithExpr::Num(4)),
+            Box::new(ArithExpr::Num(2)),
+        );
+        let res = desugar(expr);
+        assert_eq!(
+            res,
+            Ok(CompExpr::Plus(
+                Box::new(CompExpr::Num(4)),
+                Box::new(CompExpr::Mult(
+                    Box::new(CompExpr::Num(-1)),
+                    Box::new(CompExpr::Num(2)),
+                ))
             ))
         );
     }
