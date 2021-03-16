@@ -46,6 +46,15 @@ pub fn interp_not(expr: CompExpr) -> Result<ValExpr, InterpError> {
     Ok(ValExpr::Bool(!b))
 }
 
+pub fn interp_if(condition: CompExpr, yes: CompExpr, no: CompExpr) -> Result<ValExpr, InterpError> {
+    let b = as_bool(condition)?;
+    if b {
+        interp(yes)
+    } else {
+        interp(no)
+    }
+}
+
 pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
         CompExpr::Num(number) => Ok(ValExpr::Num(number)),
@@ -53,6 +62,7 @@ pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
         CompExpr::Plus(left, right) => interp_plus(*left, *right),
         CompExpr::Mult(left, right) => interp_mult(*left, *right),
         CompExpr::Not(expr) => interp_not(*expr),
+        CompExpr::If(condition, yes, no) => interp_if(*condition, *yes, *no),
     }
 }
 
