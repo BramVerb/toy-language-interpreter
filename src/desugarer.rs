@@ -6,11 +6,13 @@ pub enum CompExpr {
     Bool(bool),
     Plus(Box<CompExpr>, Box<CompExpr>),
     Mult(Box<CompExpr>, Box<CompExpr>),
+    Not(Box<CompExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum DesugarError {
     UnrecognizedBinaryOperation,
+    UnrecognizedUnaryOperation,
 }
 
 fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompExpr, DesugarError> {
@@ -34,9 +36,16 @@ fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompE
     }
 }
 
+fn desugar_un_op(op: String, expr: ArithExpr) -> Result<CompExpr, DesugarError> {
+    match op.as_str() {
+        "not" => Ok(CompExpr::Not(Box::new(desugar(expr)?))),
+        _ => Err(DesugarError::UnrecognizedUnaryOperation),
+    }
+}
 pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
     match exp {
         ArithExpr::Num(number) => Ok(CompExpr::Num(number)),
+        ArithExpr::UnOp(op, expr) => desugar_un_op(op, *expr),
         ArithExpr::BinOp(op, left, right) => desugar_bin_op(op, *left, *right),
         ArithExpr::Bool(b) => Ok(CompExpr::Bool(b)),
     }
@@ -129,5 +138,12 @@ mod tests {
         let expr = ArithExpr::Bool(false);
         let res = desugar(expr);
         assert_eq!(res, Ok(CompExpr::Bool(false)));
+    }
+
+    #[test]
+    fn unop_not() {
+        let expr = ArithExpr::UnOp("not".to_string(), Box::new(ArithExpr::Bool(false)));
+        let res = desugar(expr);
+        assert_eq!(res, Ok(CompExpr::Not(Box::new(CompExpr::Bool(false)))));
     }
 }
