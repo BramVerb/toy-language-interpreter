@@ -7,12 +7,14 @@ pub enum CompExpr {
     Plus(Box<CompExpr>, Box<CompExpr>),
     Mult(Box<CompExpr>, Box<CompExpr>),
     Not(Box<CompExpr>),
+    If(Box<CompExpr>, Box<CompExpr>, Box<CompExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum DesugarError {
-    UnrecognizedBinaryOperation,
     UnrecognizedUnaryOperation,
+    UnrecognizedBinaryOperation,
+    UnrecognizedTernaryOperation,
 }
 
 fn desugar_bin_op(op: String, left: ArithExpr, right: ArithExpr) -> Result<CompExpr, DesugarError> {
@@ -42,12 +44,30 @@ fn desugar_un_op(op: String, expr: ArithExpr) -> Result<CompExpr, DesugarError> 
         _ => Err(DesugarError::UnrecognizedUnaryOperation),
     }
 }
+
+fn desugar_tri_op(
+    op: String,
+    first: ArithExpr,
+    second: ArithExpr,
+    third: ArithExpr,
+) -> Result<CompExpr, DesugarError> {
+    match op.as_str() {
+        "if" => Ok(CompExpr::If(
+            Box::new(desugar(first)?),
+            Box::new(desugar(second)?),
+            Box::new(desugar(third)?),
+        )),
+        _ => Err(DesugarError::UnrecognizedTernaryOperation),
+    }
+}
+
 pub fn desugar(exp: ArithExpr) -> Result<CompExpr, DesugarError> {
     match exp {
         ArithExpr::Num(number) => Ok(CompExpr::Num(number)),
         ArithExpr::UnOp(op, expr) => desugar_un_op(op, *expr),
         ArithExpr::BinOp(op, left, right) => desugar_bin_op(op, *left, *right),
         ArithExpr::Bool(b) => Ok(CompExpr::Bool(b)),
+        ArithExpr::TriOp(op, first, second, third) => desugar_tri_op(op, *first, *second, *third),
     }
 }
 
@@ -145,5 +165,24 @@ mod tests {
         let expr = ArithExpr::UnOp("not".to_string(), Box::new(ArithExpr::Bool(false)));
         let res = desugar(expr);
         assert_eq!(res, Ok(CompExpr::Not(Box::new(CompExpr::Bool(false)))));
+    }
+
+    #[test]
+    fn triop_if() {
+        let expr = ArithExpr::TriOp(
+            "if".to_string(),
+            Box::new(ArithExpr::Bool(true)),
+            Box::new(ArithExpr::Num(3)),
+            Box::new(ArithExpr::Num(4)),
+        );
+        let res = desugar(expr);
+        assert_eq!(
+            res,
+            Ok(CompExpr::If(
+                Box::new(CompExpr::Bool(true)),
+                Box::new(CompExpr::Num(3)),
+                Box::new(CompExpr::Num(4))
+            ))
+        );
     }
 }
