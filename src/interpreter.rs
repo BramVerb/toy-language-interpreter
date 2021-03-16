@@ -140,4 +140,37 @@ mod tests {
         let res = interp(expr);
         assert_eq!(res, Err(InterpError::InvalidType));
     }
+
+    #[test]
+    fn if_true() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Bool(true)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(3)));
+    }
+
+    #[test]
+    fn if_false() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Bool(false)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(4)));
+    }
+
+    #[test]
+    fn if_number() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Num(1)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
+        let res = interp(expr);
+        assert_eq!(res, Err(InterpError::InvalidType));
+    }
 }
