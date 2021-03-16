@@ -46,6 +46,15 @@ pub fn interp_not(expr: CompExpr) -> Result<ValExpr, InterpError> {
     Ok(ValExpr::Bool(!b))
 }
 
+pub fn interp_if(condition: CompExpr, yes: CompExpr, no: CompExpr) -> Result<ValExpr, InterpError> {
+    let b = as_bool(condition)?;
+    if b {
+        interp(yes)
+    } else {
+        interp(no)
+    }
+}
+
 pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
     match exp {
         CompExpr::Num(number) => Ok(ValExpr::Num(number)),
@@ -53,6 +62,7 @@ pub fn interp(exp: CompExpr) -> Result<ValExpr, InterpError> {
         CompExpr::Plus(left, right) => interp_plus(*left, *right),
         CompExpr::Mult(left, right) => interp_mult(*left, *right),
         CompExpr::Not(expr) => interp_not(*expr),
+        CompExpr::If(condition, yes, no) => interp_if(*condition, *yes, *no),
     }
 }
 
@@ -137,6 +147,39 @@ mod tests {
     #[test]
     fn not_number() {
         let expr = CompExpr::Not(Box::new(CompExpr::Num(1)));
+        let res = interp(expr);
+        assert_eq!(res, Err(InterpError::InvalidType));
+    }
+
+    #[test]
+    fn if_true() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Bool(true)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(3)));
+    }
+
+    #[test]
+    fn if_false() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Bool(false)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
+        let res = interp(expr);
+        assert_eq!(res, Ok(ValExpr::Num(4)));
+    }
+
+    #[test]
+    fn if_number() {
+        let expr = CompExpr::If(
+            Box::new(CompExpr::Num(1)),
+            Box::new(CompExpr::Num(3)),
+            Box::new(CompExpr::Num(4)),
+        );
         let res = interp(expr);
         assert_eq!(res, Err(InterpError::InvalidType));
     }

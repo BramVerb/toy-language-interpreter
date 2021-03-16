@@ -11,6 +11,7 @@ pub enum ArithExpr {
     Bool(bool),
     UnOp(String, Box<ArithExpr>),
     BinOp(String, Box<ArithExpr>, Box<ArithExpr>),
+    TriOp(String, Box<ArithExpr>, Box<ArithExpr>, Box<ArithExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -21,14 +22,20 @@ pub enum ParseError {
 
 fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
     match list.as_slice() {
+        [SExpr::Symbol(op), expr] => Ok(ArithExpr::UnOp(
+            op.to_string(),
+            Box::new(parse((*expr).clone())?),
+        )),
         [SExpr::Symbol(op), left, right] => Ok(ArithExpr::BinOp(
             op.to_string(),
             Box::new(parse((*left).clone())?),
             Box::new(parse((*right).clone())?),
         )),
-        [SExpr::Symbol(op), expr] => Ok(ArithExpr::UnOp(
+        [SExpr::Symbol(op), first, second, third] => Ok(ArithExpr::TriOp(
             op.to_string(),
-            Box::new(parse((*expr).clone())?),
+            Box::new(parse((*first).clone())?),
+            Box::new(parse((*second).clone())?),
+            Box::new(parse((*third).clone())?),
         )),
         _ => Err(ParseError::UnknownExpression(SExpr::List(list))),
     }
@@ -96,6 +103,7 @@ mod tests {
             SExpr::Num(2),
             SExpr::Num(2),
             SExpr::Num(2),
+            SExpr::Num(2),
         ]);
         let res = parse(expr.clone());
         assert_eq!(res, Err(ParseError::UnknownExpression(expr)));
@@ -152,6 +160,26 @@ mod tests {
             Ok(ArithExpr::UnOp(
                 "not".to_string(),
                 Box::new(ArithExpr::Bool(false))
+            ))
+        );
+    }
+
+    #[test]
+    fn triop_if() {
+        let expr = SExpr::List(vec![
+            SExpr::Symbol("if".to_string()),
+            SExpr::Symbol("true".to_string()),
+            SExpr::Num(3),
+            SExpr::Num(4),
+        ]);
+        let res = parse(expr);
+        assert_eq!(
+            res,
+            Ok(ArithExpr::TriOp(
+                "if".to_string(),
+                Box::new(ArithExpr::Bool(true)),
+                Box::new(ArithExpr::Num(3)),
+                Box::new(ArithExpr::Num(4))
             ))
         );
     }
