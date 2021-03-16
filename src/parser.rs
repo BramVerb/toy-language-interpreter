@@ -155,4 +155,24 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn triop_if() {
+        let expr = SExpr::List(vec![
+            SExpr::Symbol("if".to_string()),
+            SExpr::Symbol("true".to_string()),
+            SExpr::Num(3),
+            SExpr::Num(4),
+        ]);
+        let res = parse(expr);
+        assert_eq!(
+            res,
+            Ok(ArithExpr::TriOp(
+                "if".to_string(),
+                Box::new(ArithExpr::Bool(true)),
+                Box::new(ArithExpr::Num(3)),
+                Box::new(ArithExpr::Num(4))
+            ))
+        );
+    }
 }
