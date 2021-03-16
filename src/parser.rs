@@ -21,14 +21,14 @@ pub enum ParseError {
 
 fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
     match list.as_slice() {
+        [SExpr::Symbol(op), expr] => Ok(ArithExpr::UnOp(
+            op.to_string(),
+            Box::new(parse((*expr).clone())?),
+        )),
         [SExpr::Symbol(op), left, right] => Ok(ArithExpr::BinOp(
             op.to_string(),
             Box::new(parse((*left).clone())?),
             Box::new(parse((*right).clone())?),
-        )),
-        [SExpr::Symbol(op), expr] => Ok(ArithExpr::UnOp(
-            op.to_string(),
-            Box::new(parse((*expr).clone())?),
         )),
         _ => Err(ParseError::UnknownExpression(SExpr::List(list))),
     }
