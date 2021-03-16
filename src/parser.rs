@@ -31,6 +31,12 @@ fn parse_list(list: Vec<SExpr>) -> Result<ArithExpr, ParseError> {
             Box::new(parse((*left).clone())?),
             Box::new(parse((*right).clone())?),
         )),
+        [SExpr::Symbol(op), first, second, third] => Ok(ArithExpr::TriOp(
+            op.to_string(),
+            Box::new(parse((*first).clone())?),
+            Box::new(parse((*second).clone())?),
+            Box::new(parse((*third).clone())?),
+        )),
         _ => Err(ParseError::UnknownExpression(SExpr::List(list))),
     }
 }
