@@ -11,6 +11,7 @@ pub enum ArithExpr {
     Bool(bool),
     UnOp(String, Box<ArithExpr>),
     BinOp(String, Box<ArithExpr>, Box<ArithExpr>),
+    TriOp(String, Box<ArithExpr>, Box<ArithExpr>, Box<ArithExpr>),
 }
 
 #[derive(Debug, PartialEq, Eq)]
