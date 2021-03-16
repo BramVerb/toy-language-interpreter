@@ -103,6 +103,7 @@ mod tests {
             SExpr::Num(2),
             SExpr::Num(2),
             SExpr::Num(2),
+            SExpr::Num(2),
         ]);
         let res = parse(expr.clone());
         assert_eq!(res, Err(ParseError::UnknownExpression(expr)));
